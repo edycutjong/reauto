@@ -22,7 +22,7 @@ export default function Home() {
     if (exploit) setActiveExploit(exploit);
     setLoading(true);
     setView('trace');
-    const data = await covalentGoldRushService.traceExploit(txHash || "0x_mock_hash");
+    const data = await covalentGoldRushService.traceExploit(txHash || "0x_pending_hash");
     setTraceData(data);
     setLoading(false);
   };

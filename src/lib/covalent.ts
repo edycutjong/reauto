@@ -50,7 +50,7 @@ export class CovalentGoldRushService {
       }
     }
     
-    // Fallback Mock
+    // Fallback for demo
     await new Promise(res => setTimeout(res, 1800));
     return {
       sourceTx: "Wormhole Bridge",
