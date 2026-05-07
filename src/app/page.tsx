@@ -1,5 +1,8 @@
 "use client";
 
+import { StatusBar } from "@/components/StatusBar";
+import { Footer } from "@/components/Footer";
+
 import React, { useState } from 'react';
 import { covalentGoldRushService } from '@/lib/covalent';
 
@@ -34,6 +37,8 @@ export default function Home() {
   };
 
   return (
+    <>
+      <StatusBar />
     <main className="min-h-screen flex flex-col bg-slate-950 text-slate-300">
       <header className="border-b border-red-500/30 bg-slate-900/80 p-4 px-8 flex justify-between items-center backdrop-blur shadow-[0_0_20px_rgba(239,68,68,0.1)]">
         <div className="font-mono text-red-500 font-black tracking-widest text-xl flex items-center gap-2">
@@ -257,5 +262,7 @@ export default function Home() {
         </div>
       </div>
     </main>
+      <Footer />
+    </>
   );
 }
