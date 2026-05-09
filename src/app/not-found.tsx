@@ -27,7 +27,7 @@ export default function NotFound() {
           className="max-w-2xl mx-auto space-y-8"
         >
           <motion.div variants={fadeUp} className="space-y-4">
-            <h1 className="text-8xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-red-500 via-orange-500 to-amber-500 drop-shadow-[0_0_30px_rgba(239,68,68,0.3)] glitch-effect" data-text="404">
+            <h1 className="text-8xl font-black tracking-tighter text-transparent bg-clip-text bg-linear-to-br from-red-500 via-orange-500 to-amber-500 drop-shadow-[0_0_30px_rgba(239,68,68,0.3)] glitch-effect" data-text="404">
               404
             </h1>
             <p className="text-xl md:text-2xl text-slate-400 font-light">

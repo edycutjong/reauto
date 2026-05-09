@@ -67,7 +67,7 @@ For a detailed breakdown of our system architecture and data flow, please refer 
 
 ## 🚀 Run it Locally (For Judges)
 
-1. **Clone the repo:** `git clone https://github.com/edycutjong/frontier-goldrush.git`
+1. **Clone the repo:** `git clone https://github.com/edycutjong/reauto.git`
 2. **Install dependencies:** `npm install`
 3. **Set up environment variables:**
    ```bash

@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 export const AnimatedBackground = () => {
   return (
-    <div className="fixed inset-0 z-0 overflow-hidden bg-[#020617] print:hidden">
+    <div className="fixed inset-0 z-0 overflow-hidden bg-slate-950 print:hidden">
       {/* Moving Grid */}
       <div 
         className="absolute inset-0 opacity-[0.1]"

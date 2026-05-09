@@ -105,7 +105,7 @@ export default function Home() {
               </motion.div>
               
               <motion.h1 variants={fadeUp} className="text-5xl md:text-7xl text-white font-black mb-6 tracking-tight">
-                AI-Powered <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-orange-500 to-red-500 bg-[length:200%_auto] animate-[gradient-shift_3s_ease-in-out_infinite]">Exploit Forensics</span>
+                AI-Powered <span className="text-transparent bg-clip-text bg-linear-to-r from-red-500 via-orange-500 to-red-500 bg-size-[200%_auto] animate-[gradient-shift_3s_ease-in-out_infinite]">Exploit Forensics</span>
               </motion.h1>
               
               <motion.p variants={fadeUp} className="text-xl text-slate-400 max-w-2xl mx-auto mb-12">
