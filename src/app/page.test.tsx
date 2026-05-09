@@ -4,6 +4,26 @@ import Home from './page';
 import { covalentGoldRushService, ExploitTrace, AutopsyReport } from '@/lib/covalent';
 import React from 'react';
 
+// Mock framer-motion
+vi.mock('framer-motion', () => ({
+  motion: new Proxy({}, {
+    get: (_target, prop) => {
+      const Component = React.forwardRef(function MotionMock({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>, ref: React.Ref<HTMLElement>) {
+        const filteredProps: Record<string, unknown> = {};
+        for (const key of Object.keys(props)) {
+          if (!['initial', 'animate', 'exit', 'transition', 'variants', 'whileHover', 'whileTap', 'layout'].includes(key)) {
+            filteredProps[key] = props[key];
+          }
+        }
+        return React.createElement(prop as string, { ...filteredProps, ref }, children);
+      });
+      Component.displayName = `motion.${String(prop)}`;
+      return Component;
+    },
+  }),
+  AnimatePresence: ({ children }: React.PropsWithChildren) => <>{children}</>,
+}));
+
 // Mock the service
 vi.mock('@/lib/covalent', () => {
   return {
@@ -23,13 +43,23 @@ vi.mock('@/components/Footer', () => ({
   Footer: () => <div data-testid="footer" />
 }));
 
+vi.mock('@/components/AnimatedBackground', () => ({
+  AnimatedBackground: () => <div data-testid="animated-bg" />
+}));
+
 describe('Home Page', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('should render the gallery view by default', () => {
+  it('should render landing view and navigate to gallery', () => {
     render(<Home />);
+    expect(screen.getByText(/AI-Powered/)).toBeDefined();
+    expect(screen.getByText('Launch App')).toBeDefined();
+    expect(screen.getByText('Demo for Judges')).toBeDefined();
+
+    // Navigate to gallery
+    fireEvent.click(screen.getByText('Launch App'));
     expect(screen.getByText('Cross-Chain Exploit Forensics')).toBeDefined();
     expect(screen.getByPlaceholderText(/Enter suspicious TX Hash/)).toBeDefined();
     expect(screen.getByText('Famous Exploits Database')).toBeDefined();
@@ -45,6 +75,7 @@ describe('Home Page', () => {
     vi.mocked(covalentGoldRushService.traceExploit).mockResolvedValue(mockTraceData);
 
     render(<Home />);
+    fireEvent.click(screen.getByText('Launch App'));
     
     // Test empty txHash branch in handleTrace
     const form = screen.getByRole('textbox').closest('form')!;
@@ -77,6 +108,7 @@ describe('Home Page', () => {
     });
 
     render(<Home />);
+    fireEvent.click(screen.getByText('Launch App'));
     
     const wormholeBtn = screen.getByText('Wormhole Exploit');
     fireEvent.click(wormholeBtn);
@@ -101,6 +133,7 @@ describe('Home Page', () => {
     });
 
     render(<Home />);
+    fireEvent.click(screen.getByText('Launch App'));
     
     // Trigger trace first
     fireEvent.click(screen.getByText('Wormhole Exploit'));
@@ -132,6 +165,7 @@ describe('Home Page', () => {
     });
 
     render(<Home />);
+    fireEvent.click(screen.getByText('Launch App'));
     fireEvent.click(screen.getByText('Wormhole Exploit'));
 
     await waitFor(() => {
@@ -150,6 +184,7 @@ describe('Home Page', () => {
     vi.mocked(covalentGoldRushService.generateAutopsyReport).mockResolvedValue({} as Partial<AutopsyReport> as AutopsyReport);
 
     render(<Home />);
+    fireEvent.click(screen.getByText('Launch App'));
     
     // Trigger trace
     fireEvent.click(screen.getByText('Wormhole Exploit'));
@@ -175,6 +210,7 @@ describe('Home Page', () => {
 
   it('should update txHash on input change', () => {
     render(<Home />);
+    fireEvent.click(screen.getByText('Launch App'));
     const input = screen.getByPlaceholderText(/Enter suspicious TX Hash/) as HTMLInputElement;
     fireEvent.change(input, { target: { value: '0x123' } });
     expect(input.value).toBe('0x123');
@@ -189,6 +225,7 @@ describe('Home Page', () => {
     });
 
     render(<Home />);
+    fireEvent.click(screen.getByText('Launch App'));
     const input = screen.getByPlaceholderText(/Enter suspicious TX Hash/) as HTMLInputElement;
     fireEvent.change(input, { target: { value: '0x123' } });
     
@@ -217,6 +254,7 @@ describe('Home Page', () => {
     });
 
     render(<Home />);
+    fireEvent.click(screen.getByText('Launch App'));
     fireEvent.click(screen.getByText('Wormhole Exploit'));
     
     await waitFor(() => {
@@ -233,5 +271,37 @@ describe('Home Page', () => {
     
     const downloadBtn = screen.getByText('Download PDF');
     fireEvent.click(downloadBtn);
+  });
+
+  it('should handle Demo for Judges button', async () => {
+    vi.mocked(covalentGoldRushService.traceExploit).mockResolvedValue({
+      sourceTx: 'Wormhole',
+      amount: '$320M',
+      launderSteps: [],
+      cashOuts: []
+    });
+
+    render(<Home />);
+    fireEvent.click(screen.getByText('Demo for Judges'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Tracing: Wormhole Exploit')).toBeDefined();
+    });
+  });
+
+  it('should navigate back to landing via REAUTO header', async () => {
+    vi.mocked(covalentGoldRushService.traceExploit).mockResolvedValue({
+      sourceTx: 'Wormhole',
+      amount: '$320M',
+      launderSteps: [],
+      cashOuts: []
+    });
+
+    render(<Home />);
+    fireEvent.click(screen.getByText('Launch App'));
+    expect(screen.getByText('Cross-Chain Exploit Forensics')).toBeDefined();
+
+    fireEvent.click(screen.getByText('REAUTO'));
+    expect(screen.getByText(/AI-Powered/)).toBeDefined();
   });
 });
