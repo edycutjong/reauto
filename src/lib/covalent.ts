@@ -1,5 +1,18 @@
 import { GoldRushClient, ChainName } from "@covalenthq/client-sdk";
 
+export interface ExploitTrace {
+  sourceTx: string;
+  amount: string;
+  launderSteps: Array<{ type: string; name: string }>;
+  cashOuts: Array<{ name: string; detail: string }>;
+}
+
+export interface AutopsyReport {
+  vector: string;
+  summary: string;
+  timeline: Array<{ time: string; description: string }>;
+}
+
 export class CovalentGoldRushService {
   private client: GoldRushClient | null = null;
   private initialized = false;
@@ -21,7 +34,7 @@ export class CovalentGoldRushService {
     this.initialized = true;
   }
 
-  async traceExploit(txHash: string): Promise<any> {
+  async traceExploit(txHash: string): Promise<ExploitTrace> {
     this.init();
     console.log(`[GoldRush SDK] Tracing exploit transaction: ${txHash}`);
     
@@ -31,7 +44,7 @@ export class CovalentGoldRushService {
         const txResp = await this.client.TransactionService.getTransaction(ChainName.ETH_MAINNET, txHash);
         
         // This is a simplified extraction since real tx structure is complex
-        if (!txResp.error && txResp.data && txResp.data.items.length > 0) {
+        if (!txResp.error && txResp.data && txResp.data.items && txResp.data.items.length > 0) {
           const tx = txResp.data.items[0];
           return {
             sourceTx: `Contract: ${tx.to_address}`,
@@ -66,7 +79,7 @@ export class CovalentGoldRushService {
     };
   }
 
-  async generateAutopsyReport(exploitId: string): Promise<any> {
+  async generateAutopsyReport(exploitId: string): Promise<AutopsyReport> {
     this.init();
     console.log(`[GoldRush SDK] Generating AI autopsy report for exploit: ${exploitId}`);
     

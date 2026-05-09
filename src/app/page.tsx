@@ -4,7 +4,14 @@ import { StatusBar } from "@/components/StatusBar";
 import { Footer } from "@/components/Footer";
 
 import React, { useState } from 'react';
-import { covalentGoldRushService } from '@/lib/covalent';
+import { covalentGoldRushService, ExploitTrace, AutopsyReport } from '@/lib/covalent';
+
+interface Exploit {
+  id: string;
+  name: string;
+  amount: string;
+  chains: string[];
+}
 
 const EXPLOITS = [
   { id: 'wormhole', name: 'Wormhole Exploit', amount: '$320M', chains: ['Solana', 'Ethereum', 'BSC'] },
@@ -15,14 +22,14 @@ const EXPLOITS = [
 export default function Home() {
   const [view, setView] = useState<'gallery' | 'trace' | 'report'>('gallery');
   const [txHash, setTxHash] = useState('');
-  const [activeExploit, setActiveExploit] = useState<any>(null);
+  const [activeExploit, setActiveExploit] = useState<Exploit | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const [traceData, setTraceData] = useState<any>(null);
-  const [reportData, setReportData] = useState<any>(null);
+  const [traceData, setTraceData] = useState<ExploitTrace | null>(null);
+  const [reportData, setReportData] = useState<AutopsyReport | null>(null);
 
-  const handleTrace = async (exploit?: any) => {
-    if (exploit) setActiveExploit(exploit);
+  const handleTrace = async (exploit: Exploit = { id: '', name: 'Custom Analysis', amount: 'Unknown', chains: ['Multi'] }) => {
+    setActiveExploit(exploit);
     setLoading(true);
     setView('trace');
     const data = await covalentGoldRushService.traceExploit(txHash || "0x_pending_hash");
@@ -60,7 +67,7 @@ export default function Home() {
                   Paste a transaction hash to instantly trace stolen funds across multiple chains, visualized through a unified GoldRush graph, and summarize the attack via an AI Death Certificate.
                 </p>
                 
-                <form onSubmit={(e) => { e.preventDefault(); handleTrace({ name: 'Custom Analysis', amount: 'Unknown', chains: ['Multi'] }); }} className="flex gap-4 relative z-10">
+                <form onSubmit={(e) => { e.preventDefault(); handleTrace(); }} className="flex gap-4 relative z-10">
                   <input 
                     type="text" 
                     placeholder="Enter suspicious TX Hash (e.g. 0x...)" 
@@ -139,7 +146,7 @@ export default function Home() {
                       </div>
 
                       <div className="space-y-4">
-                        {traceData?.launderSteps?.map((step: any, i: number) => (
+                        {traceData?.launderSteps?.map((step, i) => (
                           <div key={i} className="bg-slate-950 border border-slate-700 p-3 rounded-lg text-center w-40 relative">
                             <div className="text-xs text-slate-400 mb-1 font-mono">{step.type}</div>
                             <div className="text-white">{step.name}</div>
@@ -159,7 +166,7 @@ export default function Home() {
                       </div>
 
                       <div className="space-y-8">
-                        {traceData?.cashOuts?.map((out: any, i: number) => (
+                        {traceData?.cashOuts?.map((out, i) => (
                           <div key={i} className="bg-slate-950 border border-slate-800 p-4 rounded-xl text-center w-48 relative">
                             <div className="text-xs font-mono text-red-400 mb-1">CASH OUT / IDLE</div>
                             <div className="text-white font-bold">{out.name}</div>
@@ -220,26 +227,26 @@ export default function Home() {
                     <div>
                       <h3 className="text-white font-bold mb-4 font-mono">LAUNDERING TIMELINE</h3>
                       <div className="space-y-4 border-l-2 border-slate-800 ml-2 pl-4 text-sm">
-                        {reportData?.timeline?.map((item: any, i: number) => (
+                        {reportData?.timeline?.map((item, i) => (
                           <div key={i} className="relative">
-                            <div className={`absolute w-3 h-3 rounded-full -left-[23px] top-1 ${i === 0 ? 'bg-red-500' : 'bg-slate-700'}`}></div>
+                            <div className={`absolute w-3 h-3 rounded-full left-[-23px] top-1 ${i === 0 ? 'bg-red-500' : 'bg-slate-700'}`}></div>
                             <div className={`font-mono mb-1 ${i === 0 ? 'text-red-400' : 'text-slate-500'}`}>{item.time}</div>
                             <div className="text-slate-300">{item.description}</div>
                           </div>
                         )) || (
                           <>
                             <div className="relative">
-                              <div className="absolute w-3 h-3 bg-red-500 rounded-full -left-[23px] top-1"></div>
+                              <div className="absolute w-3 h-3 bg-red-500 rounded-full left-[-23px] top-1"></div>
                               <div className="text-red-400 font-mono mb-1">T+00:00</div>
                               <div className="text-slate-300">Exploit executed on Solana. 120k wETH minted.</div>
                             </div>
                             <div className="relative">
-                              <div className="absolute w-3 h-3 bg-slate-700 rounded-full -left-[23px] top-1"></div>
+                              <div className="absolute w-3 h-3 bg-slate-700 rounded-full left-[-23px] top-1"></div>
                               <div className="text-slate-500 font-mono mb-1">T+00:23</div>
                               <div className="text-slate-300">Funds bridged to Ethereum mainnet.</div>
                             </div>
                             <div className="relative">
-                              <div className="absolute w-3 h-3 bg-slate-700 rounded-full -left-[23px] top-1"></div>
+                              <div className="absolute w-3 h-3 bg-slate-700 rounded-full left-[-23px] top-1"></div>
                               <div className="text-slate-500 font-mono mb-1">T+02:45</div>
                               <div className="text-slate-300">30,000 ETH deposited into Tornado Cash in 100 ETH increments.</div>
                             </div>
