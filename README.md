@@ -1,6 +1,6 @@
 <div align="center">
   <h1>Reauto 🚀</h1>
-  > <p><em>AI-narrated cross-chain exploit forensics powered by GoldRush.</em></p>
+  <p><em>AI-narrated cross-chain exploit forensics powered by GoldRush.</em></p>
   <img src="docs/readme-hero.png" alt="Reauto Hero" width="100%">
   
   <br/>
@@ -28,7 +28,7 @@
 [**▶️ Watch the Demo Video**](https://youtube.com/your-demo-link)
 
 <div align="center">
-  <img src="docs/og-image.png" alt="App Demo" width="100%">
+  <img src="public/og-image.png" alt="App Demo" width="100%">
 </div>
 
 ## 💡 The Problem & Solution
