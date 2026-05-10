@@ -15,6 +15,20 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Reauto | Cross-Chain Exploit Forensics",
   description: "AI-narrated cross-chain exploit forensics powered by GoldRush API.",
+  icons: {
+    icon: "/icon.svg",
+    apple: "/apple-icon.png",
+  },
+  openGraph: {
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Reauto | Cross-Chain Exploit Forensics",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
